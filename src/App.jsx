@@ -4,20 +4,20 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-    const [data, setData] = useState([]);
+    const [response, setResponse] = useState([]);
 
     useEffect(() => {
         axios({
             url: 'http://localhost:3001',
             method: 'GET',
         }).then((res) => {
-            setData(res.json.message);
+            setResponse(res.data.message);
         });
     });
 
     return (
         <>
-            <p>{data}</p>
+            <p>{response}</p>
         </>
     );
 }
