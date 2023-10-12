@@ -1,38 +1,29 @@
-import express from "express";
+import express from 'express';
+import { createServer } from 'node:http';
+import { Server } from 'socket.io';
 import cors from 'cors'
-import socketIo from 'socket.io'
-import http from 'http'
 
-const port = 3001;
 const app = express();
-const server = http.createServer(app);
-
 app.use(cors());
 
-const io = socketIo(server, {
+
+const server = createServer(app);
+const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3001"
+        origin: "http://localhost:3000"
     }
 })
-
-io.on('connection', (socket) => {
-    console.log('a client connected: ', socket.id);
-    socket.join('clock-room')
-    
-    socket.on('disconnect', (reason) => {
-        console.log(reason);
-    });
+app.get('/', (req, res) => {
+    res.send("hello")
 });
 
-setInterval(() => {
-    io.to('clock-room').emit('time', new Date())
-}, 1000)
+io.on('connection', (socket) => {
+  console.log('a user connected', socket.id);
+  socket.on('disconnect', (reason) => {
+    console.log('user disconnected', reason);
+  })
+});
 
-server.listen(port, () => {
-    console.log(`listening on port ${port}`);
-})
-
-app.get("/", (req, res) => {
-    const message = {message: "hello"};
-    res.send(message);
-})
+server.listen(3001, () => {
+  console.log('server running at http://localhost:3000');
+});
