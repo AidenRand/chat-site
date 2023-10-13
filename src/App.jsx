@@ -26,7 +26,7 @@ function App() {
         });
         socket.on('time', (data) => setTime(data));
         socket.on('disconnect', () => setTime('server disconnected'));
-    });
+    }, []);
 
     return (
         <>
